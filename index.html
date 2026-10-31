@@ -6,47 +6,97 @@
 <title>Edisel Hub</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; overflow:hidden; background:#000; color:#e8e4dc; font-family:Georgia, 'Times New Roman', serif; }
-  canvas { position:fixed; inset:0; z-index:0; }
-  .vignette { position:fixed; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.7) 100%); }
-  .words { position:fixed; inset:0; z-index:2; pointer-events:none; }
-  .word { position:absolute; pointer-events:auto; cursor:pointer; font-size:clamp(1.4rem, 2.8vw, 2.2rem); letter-spacing:.22em; text-transform:uppercase; color:#d4af37; opacity:0; transition:opacity 1.2s, text-shadow .4s; text-shadow:0 0 20px rgba(212,175,55,.3); animation:breathe 6s ease-in-out infinite; }
-  @keyframes breathe { 0%,100%{text-shadow:0 0 20px rgba(212,175,55,.3)} 50%{text-shadow:0 0 35px rgba(212,175,55,.6)} }
-  .word:hover { text-shadow:0 0 50px rgba(212,175,55,.9); transform:scale(1.1); }
-  .title { position:fixed; bottom:8vh; left:6vw; z-index:3; font-size:clamp(2.8rem, 6vw, 5.5rem); font-weight:300; letter-spacing:.12em; line-height:.85; color:#f5e6c8; pointer-events:none; text-shadow:0 0 40px rgba(212,175,55,.5); animation:breathe 8s ease-in-out infinite; }
-  .title span { display:block; font-size:.35em; letter-spacing:.6em; margin-top:.8rem; color:#a89f8f; }
-  .overlay { position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.94); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .9s; padding:3rem; }
+  html, body { height:100%; overflow:hidden; background:#050507; font-family:Georgia, 'Times New Roman', serif; color:#e8e4dc; }
+  canvas { position:fixed; inset:0; z-index:0; opacity:0.65; }
+  .ui { position:relative; z-index:2; height:100vh; display:flex; flex-direction:column; justify-content:center; padding:5vw 7vw; }
+  h1 { font-size:clamp(3.2rem, 8vw, 6.8rem); font-weight:300; letter-spacing:.14em; line-height:.9; color:#f5e6c8; text-shadow:0 0 50px rgba(212,175,55,.35); }
+  .sub { margin-top:1.2rem; font-size:clamp(.85rem, 1.6vw, 1rem); letter-spacing:.55em; text-transform:uppercase; color:#a89f8f; font-family:system-ui, sans-serif; }
+  .modules { margin-top:5vh; display:flex; flex-direction:column; gap:1.8rem; max-width:560px; }
+  .mod { display:flex; align-items:center; gap:1.6rem; cursor:pointer; opacity:0; transform:translateX(-20px); transition:all .5s ease; }
+  .mod:nth-child(1){animation:in .8s .2s forwards} .mod:nth-child(2){animation:in .8s .35s forwards} .mod:nth-child(3){animation:in .8s .5s forwards} .mod:nth-child(4){animation:in .8s .65s forwards} .mod:nth-child(5){animation:in .8s .8s forwards} .mod:nth-child(6){animation:in .8s .95s forwards}
+  @keyframes in { to { opacity:1; transform:none; } }
+  .mod:hover { transform:translateX(8px); }
+  .mod svg { width:44px; height:44px; flex-shrink:0; stroke:#d4af37; fill:none; stroke-width:1.15; opacity:.8; transition:opacity .4s, filter .4s; }
+  .mod:hover svg { opacity:1; filter:drop-shadow(0 0 8px rgba(212,175,55,.5)); }
+  .mod-text h3 { font-size:1.25rem; letter-spacing:.16em; text-transform:uppercase; color:#f0e6d0; font-weight:400; }
+  .mod-text p { margin-top:.25rem; font-size:.75rem; color:#8a8794; letter-spacing:.1em; font-family:system-ui, sans-serif; }
+  .overlay { position:fixed; inset:0; z-index:30; background:rgba(5,5,7,.96); backdrop-filter:blur(12px); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .7s; padding:2rem; }
   .overlay.open { opacity:1; pointer-events:auto; }
-  .overlay h2 { font-size:clamp(2rem, 5vw, 3.5rem); letter-spacing:.3em; text-transform:uppercase; color:#d4af37; margin-bottom:1.5rem; font-weight:300; }
-  .overlay p { max-width:480px; text-align:center; font-style:italic; line-height:1.75; font-size:1.1rem; color:#c8c4bc; }
-  .overlay .close { position:absolute; top:2.5rem; right:2.5rem; color:#a89f8f; cursor:pointer; letter-spacing:.3em; font-size:.9rem; background:none; border:none; }
+  .overlay h2 { font-size:clamp(2rem, 4.5vw, 3.4rem); letter-spacing:.22em; text-transform:uppercase; color:#d4af37; margin-bottom:1.2rem; font-weight:300; }
+  .overlay p { max-width:500px; text-align:center; color:#c8c4bc; letter-spacing:.04em; line-height:1.7; font-size:1.02rem; font-style:italic; }
+  .overlay .close { position:absolute; top:2.2rem; right:2.2rem; font-size:1rem; color:#a89f8f; cursor:pointer; background:none; border:none; letter-spacing:.25em; }
   .overlay .close:hover { color:#d4af37; }
-  .hint { position:fixed; bottom:2vh; right:4vw; z-index:3; font-size:.7rem; letter-spacing:.4em; color:#a89f8f; opacity:.5; pointer-events:none; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="vignette"></div>
-<div class="words" id="words"></div>
-<div class="title">Edisel<span>la espiral nace aquí</span></div>
-<div class="hint">toca para sentir</div>
+<div class="ui">
+  <h1>Edisel<br>Hub</h1>
+  <div class="sub">La luz corta · La cámara mira</div>
+  <div class="modules">
+    <div class="mod" data-m="arte">
+      <svg viewBox="0 0 64 64"><path d="M32 6c12 8 16 18 16 26s-4 18-16 26c-12-8-16-18-16-26S20 14 32 6z" stroke-linecap="round"/><path d="M32 16c6 4 8 9 8 16s-2 12-8 16" stroke-linecap="round"/><path d="M22 32h20M32 22v20" stroke-linecap="round" opacity=".6"/></svg>
+      <div class="mod-text"><h3>Arte</h3><p>Cinema Corporal · la espiral nace en la cadera</p></div>
+    </div>
+    <div class="mod" data-m="mercado">
+      <svg viewBox="0 0 64 64"><path d="M8 48c8-10 14-4 20-14s12-8 20 4 8 12 8 12" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 40c6-6 10-2 14-8" stroke-linecap="round" opacity=".5"/></svg>
+      <div class="mod-text"><h3>Mercado</h3><p>Flujos que deciden</p></div>
+    </div>
+    <div class="mod" data-m="rideshare">
+      <svg viewBox="0 0 64 64"><path d="M6 40c12-16 20-8 28-16s16-4 24 8" stroke-linecap="round"/><path d="M16 46h32" stroke-linecap="round" opacity=".6"/></svg>
+      <div class="mod-text"><h3>Rideshare</h3><p>El camino que se mueve</p></div>
+    </div>
+    <div class="mod" data-m="escritura">
+      <svg viewBox="0 0 64 64"><path d="M12 52c8-20 16-12 24-24 8 12 12 10 16 2" stroke-linecap="round"/><path d="M16 24c8 6 12 4 16-2" stroke-linecap="round" opacity=".5"/></svg>
+      <div class="mod-text"><h3>Escritura</h3><p>La palabra que vuelve</p></div>
+    </div>
+    <div class="mod" data-m="finanzas">
+      <svg viewBox="0 0 64 64"><path d="M10 32h44M32 10v44" stroke-linecap="round"/><path d="M16 20l32 24M48 20L16 44" stroke-linecap="round" opacity=".7"/></svg>
+      <div class="mod-text"><h3>Finanzas</h3><p>El pulso real</p></div>
+    </div>
+    <div class="mod" data-m="vida">
+      <svg viewBox="0 0 64 64"><path d="M32 12c12 10 16 18 16 26s-4 16-16 16-16-8-16-16 4-16 16-26z" stroke-linecap="round"/><circle cx="32" cy="36" r="5"/></svg>
+      <div class="mod-text"><h3>Vida</h3><p>Lo que permanece</p></div>
+    </div>
+  </div>
+</div>
 <div class="overlay" id="ov">
   <button class="close" id="cl">volver</button>
   <h2 id="ovt"></h2>
   <p id="ovp"></p>
 </div>
 <script>
-const cv = document.getElementById('c'), cx = cv.getContext('2d');
-let W, H, t = 0, mouse = {x:0, y:0}, audioCtx, osc, gain;
-const wordsData = [
-  {name:'Arte', key:'arte', angle:0.4, dist:0.28},
-  {name:'Mercado', key:'mercado', angle:1.2, dist:0.38},
-  {name:'Rideshare', key:'rideshare', angle:2.1, dist:0.32},
-  {name:'Escritura', key:'escritura', angle:3.0, dist:0.42},
-  {name:'Finanzas', key:'finanzas', angle:4.0, dist:0.30},
-  {name:'Vida', key:'vida', angle:5.1, dist:0.36}
-];
-const texts = {
+const cv=document.getElementById('c'),cx=cv.getContext('2d');
+let W,H,pts=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];for(let i=0;i<70;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,a:Math.random()*.25+.08});}
+rs();addEventListener('resize',rs);
+let t=0;
+function draw(){
+  t+=.004;
+  cx.fillStyle='rgba(5,5,7,.12)';cx.fillRect(0,0,W,H);
+  for(const p of pts){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    cx.fillStyle=`rgba(212,175,55,${p.a})`;cx.fill();
+  }
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
+    if(d<100){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=`rgba(212,175,55,${.035*(1-d/100)})`;cx.lineWidth=0.4;cx.stroke();}
+  }
+  cx.save();cx.translate(W*.7,H*.6);
+  cx.beginPath();
+  for(let a=0;a<Math.PI*8;a+=.03){
+    const rr=a*6 + Math.sin(t+a)*5;
+    const x=Math.cos(a+t*.4)*rr,y=Math.sin(a+t*.4)*rr;
+    if(a===0)cx.moveTo(x,y);else cx.lineTo(x,y);
+  }
+  cx.strokeStyle='rgba(212,175,55,.07)';cx.lineWidth=0.6;cx.stroke();
+  cx.restore();
+  requestAnimationFrame(draw);
+}
+draw();
+const modules = {
   arte: 'La luz corta, la cámara mira y la espiral nace en la cadera. Cinema Corporal y Fly Dance viven aquí.',
   mercado: 'Bolsa e inversiones. Decisiones conscientes sobre el dinero que trabaja.',
   rideshare: 'Uber y Lyft. El camino diario, las ganancias y el movimiento de la ciudad.',
@@ -54,95 +104,14 @@ const texts = {
   finanzas: 'Schwab, SoFi y flujos. El pulso real de lo que entra y sale.',
   vida: 'Familia, raíces y Cuba. Lo que permanece cuando todo lo demás cambia.'
 };
-function startAudio() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  osc = audioCtx.createOscillator();
-  gain = audioCtx.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = 110;
-  gain.gain.value = 0.015;
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-}
-function resize() {
-  W = cv.width = innerWidth;
-  H = cv.height = innerHeight;
-  document.querySelectorAll('.word').forEach(el => el.remove());
-  wordsData.forEach(w => {
-    const el = document.createElement('div');
-    el.className = 'word';
-    el.textContent = w.name;
-    el.dataset.key = w.key;
-    document.getElementById('words').appendChild(el);
-    setTimeout(() => el.style.opacity = '1', 800 + Math.random()*600);
-    el.addEventListener('click', () => {
-      startAudio();
-      document.getElementById('ovt').textContent = w.name;
-      document.getElementById('ovp').textContent = texts[w.key];
-      document.getElementById('ov').classList.add('open');
-    });
-  });
-}
-resize();
-addEventListener('resize', resize);
-function updateMouse(x, y) {
-  mouse.x = x / W - 0.5;
-  mouse.y = y / H - 0.5;
-  if (gain) gain.gain.setTargetAtTime(0.015 + Math.abs(mouse.x)*0.03, audioCtx.currentTime, 0.1);
-  if (osc) osc.frequency.setTargetAtTime(90 + Math.abs(mouse.y)*80, audioCtx.currentTime, 0.15);
-}
-addEventListener('mousemove', e => updateMouse(e.clientX, e.clientY));
-addEventListener('touchmove', e => { e.preventDefault(); updateMouse(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
-addEventListener('click', startAudio);
-const trails = [];
-function draw() {
-  t += 0.005;
-  cx.fillStyle = 'rgba(0,0,0,0.1)';
-  cx.fillRect(0,0,W,H);
-  const cx0 = W/2 + mouse.x * 60;
-  const cy0 = H/2 + mouse.y * 60;
-  // particles following mouse
-  if (Math.random() < 0.4) trails.push({x: cx0 + (Math.random()-0.5)*40, y: cy0 + (Math.random()-0.5)*40, life:1, vx:(Math.random()-0.5)*1.2, vy:(Math.random()-0.5)*1.2});
-  for (let i = trails.length-1; i>=0; i--) {
-    const p = trails[i];
-    p.x += p.vx; p.y += p.vy; p.life -= 0.012;
-    if (p.life <= 0) { trails.splice(i,1); continue; }
-    cx.beginPath();
-    cx.arc(p.x, p.y, p.life*2.5, 0, Math.PI*2);
-    cx.fillStyle = `rgba(212,175,55,${p.life*0.4})`;
-    cx.fill();
-  }
-  cx.save();
-  cx.translate(cx0, cy0);
-  for (let s = 0; s < 3; s++) {
-    cx.beginPath();
-    for (let a = 0; a < Math.PI * 16; a += 0.015) {
-      const r = a * 8.5 + s * 22 + Math.sin(t * 1.8 + a + mouse.x*2) * 8;
-      const x = Math.cos(a + t*0.8 + s * 0.6) * r;
-      const y = Math.sin(a + t*0.8 + s * 0.6) * r;
-      if (a === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
-    }
-    cx.strokeStyle = `rgba(212,175,55,${0.18 - s*0.05})`;
-    cx.lineWidth = 0.9;
-    cx.stroke();
-  }
-  cx.restore();
-  document.querySelectorAll('.word').forEach((el, i) => {
-    const w = wordsData[i];
-    const a = w.angle + t * 0.25;
-    const r = Math.min(W, H) * w.dist * (1 + Math.sin(t + i)*0.05);
-    const x = cx0 + Math.cos(a) * r - el.offsetWidth / 2;
-    const y = cy0 + Math.sin(a) * r - el.offsetHeight / 2;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-  });
-  requestAnimationFrame(draw);
-}
-draw();
-document.getElementById('cl').addEventListener('click', () => document.getElementById('ov').classList.remove('open'));
-document.getElementById('ov').addEventListener('click', e => { if (e.target.id === 'ov') document.getElementById('ov').classList.remove('open'); });
+document.querySelectorAll('.mod').forEach(m=>m.addEventListener('click',()=>{
+  const key = m.dataset.m;
+  document.getElementById('ovt').textContent = m.querySelector('h3').textContent;
+  document.getElementById('ovp').textContent = modules[key] || 'Próximamente.';
+  document.getElementById('ov').classList.add('open');
+}));
+document.getElementById('cl').addEventListener('click',()=>document.getElementById('ov').classList.remove('open'));
+document.getElementById('ov').addEventListener('click',e=>{if(e.target.id==='ov')document.getElementById('ov').classList.remove('open');});
 </script>
 </body>
 </html>

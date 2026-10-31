@@ -6,141 +6,116 @@
 <title>Edisel Hub</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; overflow:hidden; background:#000; color:#e8e4dc; font-family:Georgia, 'Times New Roman', serif; }
-  canvas { position:fixed; inset:0; z-index:0; }
-  .words { position:fixed; inset:0; z-index:2; pointer-events:none; }
-  .word { position:absolute; pointer-events:auto; cursor:pointer; font-size:clamp(1.3rem, 2.4vw, 1.9rem); letter-spacing:.2em; text-transform:uppercase; color:#d4af37; opacity:0; text-shadow:0 0 15px rgba(212,175,55,.4); transition:opacity 1.5s, text-shadow .5s, transform .5s; }
-  .word:hover { text-shadow:0 0 30px rgba(212,175,55,.9); transform:scale(1.06); }
-  .title { position:fixed; bottom:7vh; left:5vw; z-index:3; font-size:clamp(2.6rem, 5.5vw, 5rem); font-weight:300; letter-spacing:.1em; line-height:.85; color:#f5e6c8; pointer-events:none; text-shadow:0 0 30px rgba(212,175,55,.4); }
-  .title span { display:block; font-size:.32em; letter-spacing:.55em; margin-top:.7rem; color:#a89f8f; }
-  .overlay { position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.95); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s; padding:3rem; }
-  .overlay.open { opacity:1; pointer-events:auto; }
-  .overlay h2 { font-size:clamp(1.9rem, 4.5vw, 3.2rem); letter-spacing:.28em; text-transform:uppercase; color:#d4af37; margin-bottom:1.4rem; font-weight:300; }
-  .overlay p { max-width:460px; text-align:center; font-style:italic; line-height:1.75; font-size:1.05rem; color:#c8c4bc; }
-  .overlay .close { position:absolute; top:2.2rem; right:2.2rem; color:#a89f8f; cursor:pointer; letter-spacing:.3em; font-size:.85rem; background:none; border:none; }
-  .overlay .close:hover { color:#d4af37; }
+  html, body { width:100%; height:100%; overflow:hidden; background:#020105; }
+  #c { display:block; width:100%; height:100%; }
+  .plate {
+    position:fixed; inset:0; z-index:2; pointer-events:none;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 45%, rgba(30,22,14,.55), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(18,12,8,.4), transparent 60%);
+  }
+  .title {
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    z-index:4; text-align:center; pointer-events:none;
+    font-family:Georgia, serif; font-weight:bold;
+    font-size:clamp(40px, 9vw, 110px); letter-spacing:.12em; text-transform:uppercase;
+    color:#d9cbb0;
+    text-shadow:
+      1px 1px 0 #6b5a42,
+      2px 2px 0 #5a4a34,
+      3px 3px 0 #4a3c28,
+      4px 4px 0 #3a2e1c,
+      5px 5px 0 #2a2012,
+      7px 9px 0 #1a140a,
+      10px 14px 22px rgba(0,0,0,.85),
+      0 0 60px rgba(180,130,70,.12);
+  }
+  .sub {
+    position:fixed; top:calc(50% + clamp(48px, 10vw, 120px)); left:50%; transform:translateX(-50%);
+    z-index:4; font-family:Georgia, serif; font-size:clamp(10px, 1.3vw, 14px);
+    letter-spacing:.6em; color:#7a6a54; text-transform:uppercase; pointer-events:none;
+  }
+  .mods { position:fixed; inset:0; z-index:5; pointer-events:none; }
+  .mod {
+    position:absolute; transform:translate(-50%,-50%);
+    font-family:Georgia, serif; font-size:clamp(12px, 1.5vw, 16px);
+    letter-spacing:.4em; color:#cbb89a; text-transform:uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,.7), 0 0 18px rgba(160,120,60,.25);
+    transition: color .5s, text-shadow .5s;
+  }
+  .mod:hover { color:#ffe9c8; text-shadow: 0 2px 10px rgba(0,0,0,.8), 0 0 30px rgba(220,170,90,.6); }
+  .mod b { display:block; width:5px; height:5px; margin:7px auto 0; border-radius:50%; background:#e0b86a; box-shadow:0 0 10px rgba(220,170,90,.7); }
+  .hint {
+    position:fixed; bottom:6vh; left:50%; transform:translateX(-50%); z-index:5;
+    font-size:10px; letter-spacing:.45em; color:#4a4034; text-transform:uppercase; pointer-events:none;
+  }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="words" id="words"></div>
-<div class="title">Edisel<span>el universo nace aquí</span></div>
-<div class="overlay" id="ov">
-  <button class="close" id="cl">volver</button>
-  <h2 id="ovt"></h2>
-  <p id="ovp"></p>
-</div>
+<div class="plate"></div>
+<div class="title">Edisel Hub</div>
+<div class="sub">una sola vida</div>
+<div class="mods" id="mods"></div>
+<div class="hint">toca o mueve</div>
 <script>
-const cv = document.getElementById('c'), cx = cv.getContext('2d');
-let W, H, t = 0;
-const stars = [];
-const dust = [];
-const wordsData = [
-  {name:'Arte', key:'arte', angle:0.6, dist:0.22},
-  {name:'Mercado', key:'mercado', angle:1.5, dist:0.32},
-  {name:'Rideshare', key:'rideshare', angle:2.4, dist:0.28},
-  {name:'Escritura', key:'escritura', angle:3.3, dist:0.36},
-  {name:'Finanzas', key:'finanzas', angle:4.2, dist:0.25},
-  {name:'Vida', key:'vida', angle:5.2, dist:0.34}
+const cv=document.getElementById('c'), ctx=cv.getContext('2d');
+let W,H,cx,cy,t=0,mx=.5,my=.5,go=false;
+const mods=[
+  {n:'Arte',a:-2.4},{n:'Mercado',a:-1.5},{n:'Rideshare',a:-.6},
+  {n:'Escritura',a:.4},{n:'Finanzas',a:1.3},{n:'Vida',a:2.2}
 ];
-const texts = {
-  arte: 'La luz corta, la cámara mira y la espiral nace en la cadera. Cinema Corporal y Fly Dance viven aquí.',
-  mercado: 'Bolsa e inversiones. Decisiones conscientes sobre el dinero que trabaja.',
-  rideshare: 'Uber y Lyft. El camino diario, las ganancias y el movimiento de la ciudad.',
-  escritura: 'Blog, poemas y voz. La palabra que regresa después del silencio.',
-  finanzas: 'Schwab, SoFi y flujos. El pulso real de lo que entra y sale.',
-  vida: 'Familia, raíces y Cuba. Lo que permanece cuando todo lo demás cambia.'
-};
-function resize() {
-  W = cv.width = innerWidth;
-  H = cv.height = innerHeight;
-  stars.length = 0;
-  for (let i = 0; i < 250; i++) stars.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.4, a:Math.random()*0.7+0.15, vx:(Math.random()-0.5)*0.15, vy:(Math.random()-0.5)*0.15});
-  dust.length = 0;
-  for (let i = 0; i < 60; i++) dust.push({a:Math.random()*Math.PI*10, r:Math.random()*180+20, speed:0.3+Math.random()*0.4});
-  document.querySelectorAll('.word').forEach(el => el.remove());
-  wordsData.forEach(w => {
-    const el = document.createElement('div');
-    el.className = 'word';
-    el.textContent = w.name;
-    document.getElementById('words').appendChild(el);
-    setTimeout(() => el.style.opacity = '1', 800 + Math.random()*700);
-    el.addEventListener('click', () => {
-      document.getElementById('ovt').textContent = w.name;
-      document.getElementById('ovp').textContent = texts[w.key];
-      document.getElementById('ov').classList.add('open');
-    });
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;cx=W/2;cy=H/2;buildMods()}
+function buildMods(){
+  const box=document.getElementById('mods'); box.innerHTML='';
+  const R=Math.min(W,H)*.30;
+  mods.forEach(m=>{
+    const e=document.createElement('div'); e.className='mod';
+    e.innerHTML=m.n+'<b></b>';
+    e.style.left=(cx+Math.cos(m.a)*R)+'px'; e.style.top=(cy+Math.sin(m.a)*R)+'px';
+    box.appendChild(e);
   });
 }
-resize();
-addEventListener('resize', resize);
-function draw() {
-  t += 0.004;
-  cx.fillStyle = 'rgba(0,0,0,0.06)';
-  cx.fillRect(0,0,W,H);
-  // drifting stars
-  for (const s of stars) {
-    s.x += s.vx; s.y += s.vy;
-    if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
-    if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
-    cx.beginPath();
-    cx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    cx.fillStyle = `rgba(255,230,180,${s.a * (0.5 + Math.sin(t*3 + s.x*0.01)*0.5)})`;
-    cx.fill();
-  }
-  const cx0 = W/2;
-  const cy0 = H/2;
-  cx.save();
-  cx.translate(cx0, cy0);
-  // galactic spiral arms - more movement
-  for (let arm = 0; arm < 2; arm++) {
-    cx.beginPath();
-    for (let a = 0; a < Math.PI * 12; a += 0.015) {
-      const r = a * 11 + arm * 25 + Math.sin(t*1.2 + a)*6;
-      const x = Math.cos(a + t*0.35 + arm*Math.PI) * r;
-      const y = Math.sin(a + t*0.35 + arm*Math.PI) * r;
-      if (a === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
-    }
-    cx.strokeStyle = `rgba(212,175,55,${0.16 - arm*0.05})`;
-    cx.lineWidth = 1.4;
-    cx.stroke();
-  }
-  // dust along arms
-  for (const d of dust) {
-    d.a += d.speed * 0.01;
-    const r = d.r;
-    const x = Math.cos(d.a) * r;
-    const y = Math.sin(d.a) * r;
-    cx.beginPath();
-    cx.arc(x, y, 0.8, 0, Math.PI*2);
-    cx.fillStyle = 'rgba(212,175,55,0.25)';
-    cx.fill();
-  }
-  // stronger nebula
-  const g = cx.createRadialGradient(0,0,0,0,0,Math.min(W,H)*0.4);
-  g.addColorStop(0, 'rgba(212,175,55,0.12)');
-  g.addColorStop(0.4, 'rgba(180,140,60,0.06)');
-  g.addColorStop(1, 'transparent');
-  cx.fillStyle = g;
-  cx.beginPath();
-  cx.arc(0,0,Math.min(W,H)*0.45,0,Math.PI*2);
-  cx.fill();
-  cx.restore();
-  // words orbiting a bit faster
-  document.querySelectorAll('.word').forEach((el, i) => {
-    const w = wordsData[i];
-    const a = w.angle + t * 0.18;
-    const r = Math.min(W, H) * w.dist * (1 + Math.sin(t*0.5 + i)*0.03);
-    const x = cx0 + Math.cos(a) * r - el.offsetWidth / 2;
-    const y = cy0 + Math.sin(a) * r - el.offsetHeight / 2;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+addEventListener('resize',rs);
+addEventListener('pointermove',e=>{mx=e.clientX/W;my=e.clientY/H;go=true});
+addEventListener('pointerleave',()=>go=false);
+rs();
+
+const noise=(x,y,s)=>(Math.sin(x*s+y*s*.7)+Math.sin(x*.7-y*s)+Math.cos(x*s*.5+y*s*.9))*.333;
+const blobs=[];
+for(let i=0;i<14;i++) blobs.push({x:.5+(Math.random()-.5)*.7,y:.5+(Math.random()-.5)*.6,r:.18+Math.random()*.35,c:i%3===0?'rgba(90,40,15,.07)':i%3===1?'rgba(50,25,10,.05)':'rgba(120,60,20,.04)',s:.3+Math.random()});
+
+function frame(){
+  t+=.0025;
+  ctx.fillStyle='#020105'; ctx.fillRect(0,0,W,H);
+  const vg=ctx.createRadialGradient(cx,cy,Math.min(W,H)*.2,cx,cy,Math.min(W,H)*.75);
+  vg.addColorStop(0,'rgba(8,5,3,0)'); vg.addColorStop(1,'rgba(0,0,0,.85)');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+
+  blobs.forEach(b=>{
+    const x=cx+(b.x-.5+Math.sin(t*b.s)*.03)*W;
+    const y=cy+(b.y-.5+Math.cos(t*b.s*.7)*.03)*H;
+    const r=Math.min(W,H)*b.r*(1+Math.sin(t*b.s*.5)*.05);
+    const g=ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,b.c); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,6.28); ctx.fill();
   });
-  requestAnimationFrame(draw);
+
+  for(let i=0;i<180;i++){
+    const z=(i%7+1)/7;
+    const x=(Math.sin(i*12.7)*.5+.5*W + (mx-.5)*z*40 + Math.sin(t*z*2+i)*.8)%W;
+    const y=(Math.cos(i*9.3)*.5+.5*H + (my-.5)*z*30 + Math.cos(t*z*1.5+i*.7)*.8)%H;
+    const br=.25+z*.55+Math.sin(t*3+i)*.15;
+    ctx.beginPath(); ctx.arc(x,y,z*1.4,0,6.28);
+    ctx.fillStyle='rgba(255,235,205,'+Math.max(0,br)+')'; ctx.fill();
+  }
+
+  ctx.globalAlpha=.03;
+  for(let i=0;i<900;i++){ctx.fillStyle='#fff';ctx.fillRect(Math.random()*W,Math.random()*H,1,1)}
+  ctx.globalAlpha=1;
+  requestAnimationFrame(frame);
 }
-draw();
-document.getElementById('cl').addEventListener('click', () => document.getElementById('ov').classList.remove('open'));
-document.getElementById('ov').addEventListener('click', e => { if (e.target.id === 'ov') document.getElementById('ov').classList.remove('open'); });
+frame();
 </script>
 </body>
 </html>

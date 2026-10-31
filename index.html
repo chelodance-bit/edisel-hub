@@ -34,6 +34,7 @@
 const cv = document.getElementById('c'), cx = cv.getContext('2d');
 let W, H, t = 0;
 const stars = [];
+const dust = [];
 const wordsData = [
   {name:'Arte', key:'arte', angle:0.6, dist:0.22},
   {name:'Mercado', key:'mercado', angle:1.5, dist:0.32},
@@ -54,14 +55,16 @@ function resize() {
   W = cv.width = innerWidth;
   H = cv.height = innerHeight;
   stars.length = 0;
-  for (let i = 0; i < 180; i++) stars.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.2, a:Math.random()*0.6+0.2});
+  for (let i = 0; i < 250; i++) stars.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.4, a:Math.random()*0.7+0.15, vx:(Math.random()-0.5)*0.15, vy:(Math.random()-0.5)*0.15});
+  dust.length = 0;
+  for (let i = 0; i < 60; i++) dust.push({a:Math.random()*Math.PI*10, r:Math.random()*180+20, speed:0.3+Math.random()*0.4});
   document.querySelectorAll('.word').forEach(el => el.remove());
   wordsData.forEach(w => {
     const el = document.createElement('div');
     el.className = 'word';
     el.textContent = w.name;
     document.getElementById('words').appendChild(el);
-    setTimeout(() => el.style.opacity = '1', 1000 + Math.random()*800);
+    setTimeout(() => el.style.opacity = '1', 800 + Math.random()*700);
     el.addEventListener('click', () => {
       document.getElementById('ovt').textContent = w.name;
       document.getElementById('ovp').textContent = texts[w.key];
@@ -72,48 +75,62 @@ function resize() {
 resize();
 addEventListener('resize', resize);
 function draw() {
-  t += 0.002;
-  cx.fillStyle = 'rgba(0,0,0,0.08)';
+  t += 0.004;
+  cx.fillStyle = 'rgba(0,0,0,0.06)';
   cx.fillRect(0,0,W,H);
-  // stars
+  // drifting stars
   for (const s of stars) {
+    s.x += s.vx; s.y += s.vy;
+    if (s.x < 0) s.x = W; if (s.x > W) s.x = 0;
+    if (s.y < 0) s.y = H; if (s.y > H) s.y = 0;
     cx.beginPath();
     cx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    cx.fillStyle = `rgba(255,230,180,${s.a * (0.6 + Math.sin(t*2 + s.x)*0.4)})`;
+    cx.fillStyle = `rgba(255,230,180,${s.a * (0.5 + Math.sin(t*3 + s.x*0.01)*0.5)})`;
     cx.fill();
   }
   const cx0 = W/2;
   const cy0 = H/2;
   cx.save();
   cx.translate(cx0, cy0);
-  // galactic spiral arms
+  // galactic spiral arms - more movement
   for (let arm = 0; arm < 2; arm++) {
     cx.beginPath();
-    for (let a = 0; a < Math.PI * 10; a += 0.02) {
-      const r = a * 12 + arm * 30 + Math.sin(t*0.5 + a)*4;
-      const x = Math.cos(a + t*0.15 + arm*Math.PI) * r;
-      const y = Math.sin(a + t*0.15 + arm*Math.PI) * r;
+    for (let a = 0; a < Math.PI * 12; a += 0.015) {
+      const r = a * 11 + arm * 25 + Math.sin(t*1.2 + a)*6;
+      const x = Math.cos(a + t*0.35 + arm*Math.PI) * r;
+      const y = Math.sin(a + t*0.35 + arm*Math.PI) * r;
       if (a === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
     }
-    cx.strokeStyle = `rgba(212,175,55,${0.12 - arm*0.04})`;
-    cx.lineWidth = 1.2;
+    cx.strokeStyle = `rgba(212,175,55,${0.16 - arm*0.05})`;
+    cx.lineWidth = 1.4;
     cx.stroke();
   }
-  // soft nebula glow
-  const g = cx.createRadialGradient(0,0,0,0,0,Math.min(W,H)*0.35);
-  g.addColorStop(0, 'rgba(212,175,55,0.08)');
-  g.addColorStop(0.5, 'rgba(212,175,55,0.03)');
+  // dust along arms
+  for (const d of dust) {
+    d.a += d.speed * 0.01;
+    const r = d.r;
+    const x = Math.cos(d.a) * r;
+    const y = Math.sin(d.a) * r;
+    cx.beginPath();
+    cx.arc(x, y, 0.8, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(212,175,55,0.25)';
+    cx.fill();
+  }
+  // stronger nebula
+  const g = cx.createRadialGradient(0,0,0,0,0,Math.min(W,H)*0.4);
+  g.addColorStop(0, 'rgba(212,175,55,0.12)');
+  g.addColorStop(0.4, 'rgba(180,140,60,0.06)');
   g.addColorStop(1, 'transparent');
   cx.fillStyle = g;
   cx.beginPath();
-  cx.arc(0,0,Math.min(W,H)*0.4,0,Math.PI*2);
+  cx.arc(0,0,Math.min(W,H)*0.45,0,Math.PI*2);
   cx.fill();
   cx.restore();
-  // place words gently along the arms
+  // words orbiting a bit faster
   document.querySelectorAll('.word').forEach((el, i) => {
     const w = wordsData[i];
-    const a = w.angle + t * 0.08;
-    const r = Math.min(W, H) * w.dist;
+    const a = w.angle + t * 0.18;
+    const r = Math.min(W, H) * w.dist * (1 + Math.sin(t*0.5 + i)*0.03);
     const x = cx0 + Math.cos(a) * r - el.offsetWidth / 2;
     const y = cy0 + Math.sin(a) * r - el.offsetHeight / 2;
     el.style.left = x + 'px';

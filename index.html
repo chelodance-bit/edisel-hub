@@ -14,26 +14,26 @@
   .sub { margin-top:1.2rem; font-size:.85rem; letter-spacing:.5em; text-transform:uppercase; color:#a89f8f; opacity:0; animation: fadein 2.5s 0.6s forwards; }
   @keyframes fadein { to { opacity:1; } }
   .orbit { position:relative; width:min(90vw, 720px); height:min(90vw, 720px); margin-top:1.5rem; }
-  .mod { position:absolute; width:160px; height:160px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; transition:all .6s cubic-bezier(.25,.8,.25,1); background:radial-gradient(circle at 30% 30%, rgba(212,175,55,.15), rgba(18,18,24,.7)); border:1px solid rgba(212,175,55,.2); backdrop-filter:blur(10px); opacity:0; transform:scale(0.7); }
-  .mod:nth-child(1) { top:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop 1s .5s forwards; }
-  .mod:nth-child(2) { top:28%; right:8%; animation:pop 1s .7s forwards; }
-  .mod:nth-child(3) { bottom:28%; right:8%; animation:pop 1s .9s forwards; }
-  .mod:nth-child(4) { bottom:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop 1s 1.1s forwards; }
-  .mod:nth-child(5) { bottom:28%; left:8%; animation:pop 1s 1.3s forwards; }
-  .mod:nth-child(6) { top:28%; left:8%; animation:pop 1s 1.5s forwards; }
+  .mod { position:absolute; width:160px; height:160px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; transition:all .6s cubic-bezier(.25,.8,.25,1); background:radial-gradient(circle at 30% 30%, rgba(212,175,55,.12), rgba(18,18,24,.75)); border:1px solid rgba(212,175,55,.18); backdrop-filter:blur(10px); opacity:0; }
+  .mod:nth-child(1) { top:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop1 1s .5s forwards; }
+  .mod:nth-child(2) { top:28%; right:8%; transform:scale(0.7); animation:pop 1s .7s forwards; }
+  .mod:nth-child(3) { bottom:28%; right:8%; transform:scale(0.7); animation:pop 1s .9s forwards; }
+  .mod:nth-child(4) { bottom:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop4 1s 1.1s forwards; }
+  .mod:nth-child(5) { bottom:28%; left:8%; transform:scale(0.7); animation:pop 1s 1.3s forwards; }
+  .mod:nth-child(6) { top:28%; left:8%; transform:scale(0.7); animation:pop 1s 1.5s forwards; }
   @keyframes pop { to { opacity:1; transform:scale(1); } }
-  .mod:nth-child(1) { animation-name:pop1; }
-  .mod:nth-child(4) { animation-name:pop4; }
   @keyframes pop1 { to { opacity:1; transform:translateX(-50%) scale(1); } }
   @keyframes pop4 { to { opacity:1; transform:translateX(-50%) scale(1); } }
-  .mod:hover { transform:scale(1.12); border-color:#d4af37; box-shadow:0 0 40px rgba(212,175,55,.25), inset 0 0 20px rgba(212,175,55,.1); }
-  .mod:nth-child(1):hover { transform:translateX(-50%) scale(1.12); }
-  .mod:nth-child(4):hover { transform:translateX(-50%) scale(1.12); }
-  .mod .icon { font-size:2rem; margin-bottom:.4rem; filter:drop-shadow(0 0 6px rgba(212,175,55,.5)); }
-  .mod h3 { font-size:.85rem; letter-spacing:.28em; text-transform:uppercase; color:#f0e6d0; font-weight:400; }
-  .mod p { margin-top:.3rem; font-size:.62rem; color:#8a8794; letter-spacing:.08em; line-height:1.3; max-width:130px; }
-  .center { position:absolute; top:50%; left:50%; width:140px; height:140px; border-radius:50%; transform:translate(-50%,-50%); border:1px solid rgba(212,175,55,.15); display:flex; align-items:center; justify-content:center; pointer-events:none; }
-  .center span { font-size:.7rem; letter-spacing:.4em; text-transform:uppercase; color:#d4af37; opacity:.6; }
+  .mod:hover { border-color:#d4af37; box-shadow:0 0 40px rgba(212,175,55,.25), inset 0 0 20px rgba(212,175,55,.08); }
+  .mod:nth-child(1):hover { transform:translateX(-50%) scale(1.1); }
+  .mod:nth-child(2):hover, .mod:nth-child(3):hover, .mod:nth-child(5):hover, .mod:nth-child(6):hover { transform:scale(1.1); }
+  .mod:nth-child(4):hover { transform:translateX(-50%) scale(1.1); }
+  .mod svg { width:42px; height:42px; margin-bottom:.5rem; stroke:#d4af37; fill:none; stroke-width:1.2; filter:drop-shadow(0 0 4px rgba(212,175,55,.4)); transition:transform .5s; }
+  .mod:hover svg { transform:scale(1.15) rotate(8deg); }
+  .mod h3 { font-size:.82rem; letter-spacing:.26em; text-transform:uppercase; color:#f0e6d0; font-weight:400; }
+  .mod p { margin-top:.35rem; font-size:.6rem; color:#8a8794; letter-spacing:.07em; line-height:1.3; max-width:125px; }
+  .center { position:absolute; top:50%; left:50%; width:130px; height:130px; border-radius:50%; transform:translate(-50%,-50%); border:1px solid rgba(212,175,55,.12); display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .center span { font-size:.65rem; letter-spacing:.45em; text-transform:uppercase; color:#d4af37; opacity:.5; }
   .overlay { position:fixed; inset:0; z-index:20; background:rgba(10,10,15,.94); backdrop-filter:blur(18px); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .7s ease; }
   .overlay.open { opacity:1; pointer-events:auto; }
   .overlay h2 { font-size:clamp(1.8rem,4vw,3rem); letter-spacing:.3em; text-transform:uppercase; color:#d4af37; margin-bottom:1rem; }
@@ -49,12 +49,30 @@
   <div class="sub">Un solo lugar · Una sola vida</div>
   <div class="orbit">
     <div class="center"><span>HUB</span></div>
-    <div class="mod" data-m="arte"><span class="icon">✦</span><h3>Arte</h3><p>Luz, cuerpo y movimiento</p></div>
-    <div class="mod" data-m="mercado"><span class="icon">◈</span><h3>Mercado</h3><p>Flujos y decisiones</p></div>
-    <div class="mod" data-m="rideshare"><span class="icon">◉</span><h3>Rideshare</h3><p>El camino diario</p></div>
-    <div class="mod" data-m="escritura"><span class="icon">☰</span><h3>Escritura</h3><p>La palabra viva</p></div>
-    <div class="mod" data-m="finanzas"><span class="icon">◆</span><h3>Finanzas</h3><p>El pulso del dinero</p></div>
-    <div class="mod" data-m="vida"><span class="icon">○</span><h3>Vida</h3><p>Lo que permanece</p></div>
+    <div class="mod" data-m="arte">
+      <svg viewBox="0 0 64 64"><path d="M32 8c0 12 8 16 8 24s-8 12-8 24M32 8c0 12-8 16-8 24s8 12 8 24M20 32h24" stroke-linecap="round"/></svg>
+      <h3>Arte</h3><p>Luz, cuerpo y movimiento</p>
+    </div>
+    <div class="mod" data-m="mercado">
+      <svg viewBox="0 0 64 64"><path d="M12 44l10-16 8 10 10-18 12 24" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="32" r="20" stroke-opacity=".4"/></svg>
+      <h3>Mercado</h3><p>Flujos y decisiones</p>
+    </div>
+    <div class="mod" data-m="rideshare">
+      <svg viewBox="0 0 64 64"><path d="M8 40c8-12 16-8 24-16s16-4 24 8" stroke-linecap="round"/><circle cx="20" cy="42" r="4"/><circle cx="44" cy="42" r="4"/></svg>
+      <h3>Rideshare</h3><p>El camino diario</p>
+    </div>
+    <div class="mod" data-m="escritura">
+      <svg viewBox="0 0 64 64"><path d="M16 48c8-16 16-8 24-20 4 8 8 12 16 4" stroke-linecap="round"/><path d="M20 20c4 2 8 0 12-4" stroke-linecap="round"/></svg>
+      <h3>Escritura</h3><p>La palabra viva</p>
+    </div>
+    <div class="mod" data-m="finanzas">
+      <svg viewBox="0 0 64 64"><path d="M12 32h40M32 12v40M20 20l24 24M44 20L20 44" stroke-linecap="round"/><circle cx="32" cy="32" r="18" stroke-opacity=".5"/></svg>
+      <h3>Finanzas</h3><p>El pulso del dinero</p>
+    </div>
+    <div class="mod" data-m="vida">
+      <svg viewBox="0 0 64 64"><path d="M32 12c8 8 12 16 12 24s-4 16-12 16-12-8-12-16 4-16 12-24z" stroke-linecap="round"/><path d="M32 28v16M26 36h12" stroke-linecap="round"/></svg>
+      <h3>Vida</h3><p>Lo que permanece</p>
+    </div>
   </div>
 </div>
 <div class="overlay" id="ov">

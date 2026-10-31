@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edisel Hub</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #141414;
+    --text: #e8e8e8;
+    --muted: #8a8a8a;
+    --accent: #c9a227;
+    --border: #2a2a2a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+  }
+  header .status {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 1rem 1.5rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: var(--text); }
+  nav button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card h3 {
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .card p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .card .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-top: 0.8rem;
+    color: var(--muted);
+  }
+  .overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem;
+  }
+  .stat .label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .stat .value {
+    font-size: 1.3rem;
+    color: var(--accent);
+  }
+  .module-view { display: none; }
+  .module-view.active { display: block; }
+  .module-view h2 {
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+  .placeholder {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-style: italic;
+    padding: 2rem 0;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1rem 2rem;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Edisel Hub</h1>
+  <span class="status">SISTEMA ACTIVO · v0.1</span>
+</header>
+<nav id="nav">
+  <button class="active" data-module="overview">VISIÓN GENERAL</button>
+  <button data-module="arte">ARTE</button>
+  <button data-module="mercado">MERCADO</button>
+  <button data-module="rideshare">RIDESHARE</button>
+  <button data-module="escritura">ESCRITURA</button>
+  <button data-module="finanzas">FINANZAS</button>
+</nav>
+<main>
+  <div class="module-view active" id="overview">
+    <div class="overview">
+      <div class="stat"><div class="label">INGRESOS HOY</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">GASTOS HOY</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">PUBLICACIONES</div><div class="value">—</div></div>
+      <div class="stat"><div class="label">MÓDULOS</div><div class="value">6</div></div>
+    </div>
+    <div class="grid">
+      <div class="card" data-module="arte"><h3>ARTE</h3><p>Cinema Corporal, Caja Negra, fotografía, videografía, contenido.</p><span class="tag">CREATIVO</span></div>
+      <div class="card" data-module="mercado"><h3>MERCADO</h3><p>Bolsa de valores, operaciones, portafolio.</p><span class="tag">FINANCIERO</span></div>
+      <div class="card" data-module="rideshare"><h3>RIDESHARE</h3><p>Uber, Lyft, ganancias, gastos del vehículo.</p><span class="tag">OPERATIVO</span></div>
+      <div class="card" data-module="escritura"><h3>ESCRITURA</h3><p>Blog, poemas, historias, voz propia.</p><span class="tag">CREATIVO</span></div>
+      <div class="card" data-module="finanzas"><h3>FINANZAS</h3><p>Cuentas, impuestos, ahorro, inversiones.</p><span class="tag">FINANCIERO</span></div>
+    </div>
+  </div>
+  <div class="module-view" id="arte"><h2>ARTE</h2><p class="placeholder">Módulo en construcción. Aquí vivirá Cinema Corporal, Caja Negra 5.20 y todo el trabajo creativo.</p></div>
+  <div class="module-view" id="mercado"><h2>MERCADO</h2><p class="placeholder">Módulo en construcción. Operaciones bursátiles y seguimiento de portafolio.</p></div>
+  <div class="module-view" id="rideshare"><h2>RIDESHARE</h2><p class="placeholder">Módulo en construcción. Ingresos Uber/Lyft, costos de RideshareCarz, Hertz y gasolina.</p></div>
+  <div class="module-view" id="escritura"><h2>ESCRITURA</h2><p class="placeholder">Módulo en construcción. Blog, poemas, historias con voz propia.</p></div>
+  <div class="module-view" id="finanzas"><h2>FINANZAS</h2><p class="placeholder">Módulo en construcción. Schwab, SoFi, impuestos, flujo de caja.</p></div>
+</main>
+<footer>EDISEL CRUZ · UN SOLO LUGAR · UNA SOLA VIDA</footer>
+<script>
+  const nav = document.getElementById('nav);
+  const views = document.querySelectorAll('.module-view);
+  const cards = document.querySelectorAll('.card[data-module]');
+  function show(module) {
+    views.forEach(v => v.classList.toggle('active', v.id === module));
+    nav.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.module === module));
+  }
+  nav.querySelectorAll('button').forEach(b => b.addEventListener('click', () => show(b.dataset.module)));
+  cards.forEach(c => c.addEventListener('click', () => show(c.dataset.module)));
+  // Bus de eventos mínimo: cada módulo puede emitir y escuchar
+  const bus = {
+    listeners: {},
+    on(event, fn) { (this.listeners[event] = this.listeners[event] || []).push(fn); },
+    emit(event, data) { (this.listeners[event] || []).forEach(fn => fn(data)); }
+  };
+  window.EdiselHub = { bus, show };
+</script>
+</body>
+</html>

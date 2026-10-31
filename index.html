@@ -7,28 +7,38 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; overflow:hidden; background:#0a0a0f; font-family:'Segoe UI', system-ui, -apple-system, sans-serif; color:#e8e6e3; }
-  canvas { position:fixed; inset:0; z-index:0; opacity:0.7; }
-  .ui { position:relative; z-index:2; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; }
-  h1 { font-size:clamp(2.2rem, 5.5vw, 5rem); font-weight:100; letter-spacing:.42em; text-transform:uppercase; background:linear-gradient(100deg, #d4af37, #f5e6c8, #d4af37); -webkit-background-clip:text; background-clip:text; color:transparent; animation: shimmer 8s ease-in-out infinite; text-shadow:0 0 40px rgba(212,175,55,.3); }
+  canvas { position:fixed; inset:0; z-index:0; opacity:0.75; }
+  .ui { position:relative; z-index:2; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1.5rem; }
+  h1 { font-size:clamp(2.4rem, 6vw, 5.2rem); font-weight:100; letter-spacing:.45em; text-transform:uppercase; background:linear-gradient(100deg, #d4af37, #f5e6c8, #d4af37); -webkit-background-clip:text; background-clip:text; color:transparent; animation: shimmer 8s ease-in-out infinite; text-shadow:0 0 50px rgba(212,175,55,.25); }
   @keyframes shimmer { 0%,100%{background-position:0% center} 50%{background-position:100% center} }
-  .sub { margin-top:1.5rem; font-size:.9rem; letter-spacing:.55em; text-transform:uppercase; color:#a89f8f; opacity:0; animation: fadein 2.5s 0.8s forwards; }
+  .sub { margin-top:1.2rem; font-size:.85rem; letter-spacing:.5em; text-transform:uppercase; color:#a89f8f; opacity:0; animation: fadein 2.5s 0.6s forwards; }
   @keyframes fadein { to { opacity:1; } }
-  .modules { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:1.8rem; margin-top:3.5rem; max-width:980px; width:100%; }
-  .mod { position:relative; padding:2.2rem 1.6rem; text-align:center; border:1px solid rgba(212,175,55,.18); border-radius:20px; background:rgba(18,18,24,.65); backdrop-filter:blur(12px); cursor:pointer; transition:all .5s cubic-bezier(.25,.8,.25,1); opacity:0; transform:translateY(40px) scale(0.96); overflow:hidden; }
-  .mod::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, transparent, rgba(212,175,55,.08), transparent); opacity:0; transition:opacity .5s; }
-  .mod:hover::before { opacity:1; }
-  .mod:nth-child(1){animation:up 1s .4s forwards} .mod:nth-child(2){animation:up 1s .6s forwards} .mod:nth-child(3){animation:up 1s .8s forwards} .mod:nth-child(4){animation:up 1s 1s forwards} .mod:nth-child(5){animation:up 1s 1.2s forwards} .mod:nth-child(6){animation:up 1s 1.4s forwards}
-  @keyframes up { to { opacity:1; transform:translateY(0) scale(1); } }
-  .mod:hover { border-color:#d4af37; transform:translateY(-8px) scale(1.04); box-shadow:0 25px 50px rgba(212,175,55,.18), 0 0 30px rgba(212,175,55,.1); }
-  .mod .icon { font-size:2.4rem; margin-bottom:1rem; display:block; filter:drop-shadow(0 0 8px rgba(212,175,55,.4)); transition:transform .4s; }
-  .mod:hover .icon { transform:scale(1.15) rotate(5deg); }
-  .mod h3 { font-size:1.05rem; letter-spacing:.32em; text-transform:uppercase; color:#f0e6d0; font-weight:400; }
-  .mod p { margin-top:.6rem; font-size:.72rem; color:#8a8794; letter-spacing:.12em; line-height:1.4; }
-  .overlay { position:fixed; inset:0; z-index:20; background:rgba(10,10,15,.92); backdrop-filter:blur(16px); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .7s ease; }
+  .orbit { position:relative; width:min(90vw, 720px); height:min(90vw, 720px); margin-top:1.5rem; }
+  .mod { position:absolute; width:160px; height:160px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; transition:all .6s cubic-bezier(.25,.8,.25,1); background:radial-gradient(circle at 30% 30%, rgba(212,175,55,.15), rgba(18,18,24,.7)); border:1px solid rgba(212,175,55,.2); backdrop-filter:blur(10px); opacity:0; transform:scale(0.7); }
+  .mod:nth-child(1) { top:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop 1s .5s forwards; }
+  .mod:nth-child(2) { top:28%; right:8%; animation:pop 1s .7s forwards; }
+  .mod:nth-child(3) { bottom:28%; right:8%; animation:pop 1s .9s forwards; }
+  .mod:nth-child(4) { bottom:8%; left:50%; transform:translateX(-50%) scale(0.7); animation:pop 1s 1.1s forwards; }
+  .mod:nth-child(5) { bottom:28%; left:8%; animation:pop 1s 1.3s forwards; }
+  .mod:nth-child(6) { top:28%; left:8%; animation:pop 1s 1.5s forwards; }
+  @keyframes pop { to { opacity:1; transform:scale(1); } }
+  .mod:nth-child(1) { animation-name:pop1; }
+  .mod:nth-child(4) { animation-name:pop4; }
+  @keyframes pop1 { to { opacity:1; transform:translateX(-50%) scale(1); } }
+  @keyframes pop4 { to { opacity:1; transform:translateX(-50%) scale(1); } }
+  .mod:hover { transform:scale(1.12); border-color:#d4af37; box-shadow:0 0 40px rgba(212,175,55,.25), inset 0 0 20px rgba(212,175,55,.1); }
+  .mod:nth-child(1):hover { transform:translateX(-50%) scale(1.12); }
+  .mod:nth-child(4):hover { transform:translateX(-50%) scale(1.12); }
+  .mod .icon { font-size:2rem; margin-bottom:.4rem; filter:drop-shadow(0 0 6px rgba(212,175,55,.5)); }
+  .mod h3 { font-size:.85rem; letter-spacing:.28em; text-transform:uppercase; color:#f0e6d0; font-weight:400; }
+  .mod p { margin-top:.3rem; font-size:.62rem; color:#8a8794; letter-spacing:.08em; line-height:1.3; max-width:130px; }
+  .center { position:absolute; top:50%; left:50%; width:140px; height:140px; border-radius:50%; transform:translate(-50%,-50%); border:1px solid rgba(212,175,55,.15); display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .center span { font-size:.7rem; letter-spacing:.4em; text-transform:uppercase; color:#d4af37; opacity:.6; }
+  .overlay { position:fixed; inset:0; z-index:20; background:rgba(10,10,15,.94); backdrop-filter:blur(18px); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .7s ease; }
   .overlay.open { opacity:1; pointer-events:auto; }
-  .overlay h2 { font-size:clamp(2rem,4vw,3.2rem); letter-spacing:.35em; text-transform:uppercase; color:#d4af37; margin-bottom:1rem; }
-  .overlay p { max-width:480px; text-align:center; color:#c8c4bc; letter-spacing:.08em; line-height:1.6; font-size:.95rem; }
-  .overlay .close { position:absolute; top:2.5rem; right:2.5rem; font-size:1.8rem; color:#a89f8f; cursor:pointer; background:none; border:none; transition:color .3s, transform .3s; }
+  .overlay h2 { font-size:clamp(1.8rem,4vw,3rem); letter-spacing:.3em; text-transform:uppercase; color:#d4af37; margin-bottom:1rem; }
+  .overlay p { max-width:460px; text-align:center; color:#c8c4bc; letter-spacing:.06em; line-height:1.65; font-size:.95rem; padding:0 1rem; }
+  .overlay .close { position:absolute; top:2rem; right:2rem; font-size:1.6rem; color:#a89f8f; cursor:pointer; background:none; border:none; transition:color .3s, transform .3s; }
   .overlay .close:hover { color:#d4af37; transform:scale(1.1); }
 </style>
 </head>
@@ -37,13 +47,14 @@
 <div class="ui">
   <h1>Edisel Hub</h1>
   <div class="sub">Un solo lugar · Una sola vida</div>
-  <div class="modules">
-    <div class="mod" data-m="arte"><span class="icon">✦</span><h3>Arte</h3><p>Cinema Corporal · Fly Dance<br>Luz, cuerpo y movimiento</p></div>
-    <div class="mod" data-m="mercado"><span class="icon">◈</span><h3>Mercado</h3><p>Bolsa · Inversiones<br>Flujos y decisiones</p></div>
-    <div class="mod" data-m="rideshare"><span class="icon">◉</span><h3>Rideshare</h3><p>Uber · Lyft<br>El camino diario</p></div>
-    <div class="mod" data-m="escritura"><span class="icon">☰</span><h3>Escritura</h3><p>Blog · Poemas · Voz<br>La palabra viva</p></div>
-    <div class="mod" data-m="finanzas"><span class="icon">◆</span><h3>Finanzas</h3><p>Schwab · SoFi<br>El pulso del dinero</p></div>
-    <div class="mod" data-m="vida"><span class="icon">○</span><h3>Vida</h3><p>Familia · Raíces · Cuba<br>Lo que permanece</p></div>
+  <div class="orbit">
+    <div class="center"><span>HUB</span></div>
+    <div class="mod" data-m="arte"><span class="icon">✦</span><h3>Arte</h3><p>Luz, cuerpo y movimiento</p></div>
+    <div class="mod" data-m="mercado"><span class="icon">◈</span><h3>Mercado</h3><p>Flujos y decisiones</p></div>
+    <div class="mod" data-m="rideshare"><span class="icon">◉</span><h3>Rideshare</h3><p>El camino diario</p></div>
+    <div class="mod" data-m="escritura"><span class="icon">☰</span><h3>Escritura</h3><p>La palabra viva</p></div>
+    <div class="mod" data-m="finanzas"><span class="icon">◆</span><h3>Finanzas</h3><p>El pulso del dinero</p></div>
+    <div class="mod" data-m="vida"><span class="icon">○</span><h3>Vida</h3><p>Lo que permanece</p></div>
   </div>
 </div>
 <div class="overlay" id="ov">
@@ -54,12 +65,12 @@
 <script>
 const cv=document.getElementById('c'),cx=cv.getContext('2d');
 let W,H,pts=[];
-function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];for(let i=0;i<60;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.4,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,a:Math.random()*.4+.15});}
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];for(let i=0;i<70;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.3,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,a:Math.random()*.35+.12});}
 rs();addEventListener('resize',rs);
 let t=0;
 function draw(){
-  t+=.008;
-  cx.fillStyle='rgba(10,10,15,.18)';cx.fillRect(0,0,W,H);
+  t+=.007;
+  cx.fillStyle='rgba(10,10,15,.16)';cx.fillRect(0,0,W,H);
   for(const p of pts){
     p.x+=p.vx;p.y+=p.vy;
     if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
@@ -68,17 +79,17 @@ function draw(){
   }
   for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
     const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
-    if(d<140){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=`rgba(212,175,55,${.06*(1-d/140)})`;cx.lineWidth=0.6;cx.stroke();}
+    if(d<130){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=`rgba(212,175,55,${.05*(1-d/130)})`;cx.lineWidth=0.5;cx.stroke();}
   }
   cx.save();cx.translate(W/2,H/2);
-  for(let i=0;i<2;i++){
+  for(let i=0;i<3;i++){
     cx.beginPath();
-    for(let a=0;a<Math.PI*8;a+=.04){
-      const rr=a*10+i*40+Math.sin(t*1.5+a)*12;
-      const x=Math.cos(a+t*0.7+i)*rr,y=Math.sin(a+t*0.7+i)*rr;
+    for(let a=0;a<Math.PI*10;a+=.03){
+      const rr=a*8+i*35+Math.sin(t*1.2+a)*10;
+      const x=Math.cos(a+t*0.6+i)*rr,y=Math.sin(a+t*0.6+i)*rr;
       if(a===0)cx.moveTo(x,y);else cx.lineTo(x,y);
     }
-    cx.strokeStyle=`rgba(212,175,55,${.12-i*.04})`;cx.lineWidth=0.8;cx.stroke();
+    cx.strokeStyle=`rgba(212,175,55,${.1-i*.03})`;cx.lineWidth=0.7;cx.stroke();
   }
   cx.restore();
   requestAnimationFrame(draw);
